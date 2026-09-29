@@ -1,0 +1,58 @@
+# AGENTS.md
+
+本仓库 **MyOpenSource** 是 `xianshujun` 的开源练习场，同时用于存放可复用的 agent skill。
+仓库是**公开**的，因此任何凭据、密钥、内网地址、个人隐私都不得提交。
+
+## 目录约定
+
+```
+.
+├── AGENTS.md                      # 本文件：agent 在本仓库工作时的规则
+├── .gitignore
+├── .agents/skills/<skill-name>/   # 技能目录（ZCode/agent 自动发现路径）
+│   ├── SKILL.md                   # 必需：YAML frontmatter + markdown 正文
+│   └── *.local                    # 本机专属配置，被 .gitignore 排除
+└── <练习项目>/                     # 参与上游项目的克隆，如 adk-go/（同样不提交）
+```
+
+新增 skill 时遵循以下规则：
+
+- 目录名与 frontmatter 里的 `name` 一致，小写 kebab-case。
+- `description` 写清楚「做什么」+「什么时候触发」，这是自动加载的唯一依据，宁可写得积极一些。
+- 正文用祈使句，控制在 500 行以内；长内容拆到同目录的 `references/` 下按需读取。
+- 技能正文**不放密钥、不放真实 IP/域名**。环境相关的具体值放到同目录被 gitignore 的 `*.local` 文件里，SKILL.md 只写「去读哪个文件」。
+
+## 网络规则（重要）
+
+本机（服务器容器）位于内网，**直连 Google、GitHub、OpenAI 等站点不通**。
+出口是用户 Windows 上的 Clash（已开启「允许局域网连接」），其地址记在同目录的
+`.agents/skills/network-proxy/endpoint.local`，默认端口 7897。
+
+- 访问被墙站点前，先按 `.agents/skills/network-proxy/SKILL.md` 里的流程取用代理。
+- 代理不可用时，**不要自行猜测或扫描网段**，按该技能要求向用户询问三件事（Win 的 IP、Clash 是否开启、是否开启局域网连接）。
+- 本环境**刻意不做全局代理**：不要往 `~/.bashrc` 等配置文件里写全局 `http_proxy`，用命令级前缀或工具自身配置。
+- 国内可直连的资源（`goproxy.cn`、npm/apt 国内镜像、内网服务）保持直连，不要绕代理。
+
+## 环境事实
+
+- 工作目录 `/workspace/github`，ZCode 运行在内网的 Docker 容器中（无 `ip`/`ping`/`nc` 命令，用 `curl`、`/dev/tcp` 代替）。
+- Go：`go1.22.2`，`GOTOOLCHAIN=auto`（高版本 go.mod 会自动下载工具链，走 `GOPROXY=goproxy.cn`，已验证可用）。
+- `gh` CLI 已安装在 `~/bin/gh`，已登录 GitHub 账号 `xianshujun`，git 走 https 协议。
+- git 全局身份用的是工作邮箱，**不要让它出现在公开仓库的提交里**。GitHub 账号是 `xianshujun`，其已验证邮箱按仓库本地配置（`git config user.email`），值不要写进本文件。
+- 提交 Google 相关开源项目（如 adk-go）时，必须用 GitHub 账号已验证的邮箱，否则 CLA 机器人匹配不上。
+- 已有 git 配置：`http.https://github.com.proxy` 指向 Win 上的 Clash，仅对 github.com 生效。
+
+## LLM 与密钥
+
+- 本项目优先用内网的 OpenAI 兼容端点，模型名需带 provider 前缀（如 `deepseek/deepseek-flash`），不再用 Google 的 key；该端点内网直连可达，不要走代理。
+- 密钥与 base-url 存放在容器内 `/root/.config/adk-go/env.local`（仓库外，绝不提交、不要把值贴进任何文件）；一条命令跑起来：`/root/.config/adk-go/run.sh console`。
+- **ADK 的 `model/openaimodel` 走 OpenAI Responses API（`POST /v1/responses`）**，只实现 chat completions 的网关跑不通——接新端点前先确认它支持 Responses API。
+- 模型名写错（漏掉 `provider/` 前缀）会得到 `503 no_provider_error: No matching provider found`，别误判成服务故障。
+
+## 参与开源项目的约定
+
+- 上游仓库一律加为 `upstream` remote，自己的 fork 为 `origin`。
+- 每个改动单独开分支，分支名带 issue 编号（如 `fix-1463-misspell`）。
+- 提交前本地跑通目标包的测试：`go test ./<pkg>/... -count=1`。
+- 开 PR 用 `gh pr create`，PR 描述里引用 issue 编号。
+- 不要提交任何密钥；密钥只在运行时通过环境变量传入。
