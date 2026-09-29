@@ -4,3 +4,15 @@
 [submodule "a2a-go"]
 	path = a2a-go
 	url = https://github.com/xianshujun/a2a-go.git
+[submodule "langchaingo"]
+	path = langchaingo
+	url = https://github.com/xianshujun/langchaingo.git
+[submodule "mcp-go-sdk"]
+	path = mcp-go-sdk
+	url = https://github.com/xianshujun/go-sdk.git
+[submodule "eino"]
+	path = eino
+	url = https://github.com/xianshujun/eino.git
+[submodule "kagent"]
+	path = kagent
+	url = https://github.com/xianshujun/kagent.git
