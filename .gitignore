@@ -1,5 +1,5 @@
-# 克隆的练习项目：各自带独立 remote，不进本仓库
-adk-go/
+# adk-go 是我 fork 的上游练习项目，以 git submodule 形式登记（见 .gitmodules），
+# 所以这里**不再忽略**；它内部有自己的仓库与 remote（origin=fork, upstream=google）。
 
 # 本地技能目录：只在本机使用/阅读，不进公开仓库
 skill/

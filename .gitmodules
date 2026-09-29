@@ -1,0 +1,3 @@
+[submodule "adk-go"]
+	path = adk-go
+	url = https://github.com/xianshujun/adk-go.git
