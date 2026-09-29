@@ -15,6 +15,17 @@
 └── <练习项目>/                     # 参与上游项目的克隆，如 adk-go/（同样不提交）
 ```
 
+## submodule 指针（agent 主动维护）
+
+`adk-go` 是登记在本仓库里的 submodule（`.gitmodules` 指向自己的 fork）。它的提交历史与父仓库**分开**，所以在 adk-go 里提交之后，父仓库记的那条指针会落后。
+
+- 发现 `git status` 里 `adk-go` 显示 `new commits` / `modified content` 时，**主动**更新并提交指针，不用等用户提：
+  ```bash
+  git add adk-go && git commit -m "chore: 更新 adk-go 指针（说明进展）"
+  ```
+- 新克隆本仓库后 `adk-go/` 为空时，`git submodule update --init --recursive` 拉取。
+- 完整流程、排查方法和「不要做的事」见 `skill/submodule-sync/SKILL.md`。
+
 ## 技能怎么放、怎么读（重要）
 
 - **所有技能一律放在 `skill/<skill-name>/` 下，也一律从 `skill/` 里读取**：需要用到某个技能时，读 `skill/<skill-name>/SKILL.md`；它 frontmatter 里的 `description` 就是判断「这个技能是否与当前任务相关」的唯一依据。
@@ -22,6 +33,7 @@
 - 当前技能清单（新增技能时同步更新这一段）：
   - `skill/network-proxy/` —— 通过用户 Windows 上的 Clash 代理访问墙外站点。端点值在同目录的 `endpoint.local`。
   - `skill/visual-check/` —— 用无头浏览器看前端页面：截图、量样式、排查「闪一下/跳一下」。附带 `scripts/` 与 `INSTALL.md`。
+  - `skill/submodule-sync/` —— 维护 `adk-go` 等 submodule 的指针同步（见下一节）。
 - 公开仓库里另保留一份**可对外发布**的副本 `.agents/skills/network-proxy/`（与 `skill/network-proxy/` 内容一致，供他人复用）。**读取时以 `skill/` 为准**；技能内容有改动时，两份一起改。
 - 新增技能时还要遵循：
   - 目录名与 frontmatter 里的 `name` 一致，小写 kebab-case。
