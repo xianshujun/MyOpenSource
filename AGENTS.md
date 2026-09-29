@@ -9,26 +9,31 @@
 .
 ├── AGENTS.md                      # 本文件：agent 在本仓库工作时的规则
 ├── .gitignore
-├── .agents/skills/<skill-name>/   # 技能目录（ZCode/agent 自动发现路径）
+├── skill/<skill-name>/            # 技能统一放这里（本地目录，被 .gitignore 排除）
 │   ├── SKILL.md                   # 必需：YAML frontmatter + markdown 正文
-│   └── *.local                    # 本机专属配置，被 .gitignore 排除
+│   └── ...                        # 可带 scripts/、references/、*.local 等
 └── <练习项目>/                     # 参与上游项目的克隆，如 adk-go/（同样不提交）
 ```
 
-新增 skill 时遵循以下规则：
+## 技能怎么放、怎么读（重要）
 
-- 目录名与 frontmatter 里的 `name` 一致，小写 kebab-case。
-- `description` 写清楚「做什么」+「什么时候触发」，这是自动加载的唯一依据，宁可写得积极一些。
-- 正文用祈使句，控制在 500 行以内；长内容拆到同目录的 `references/` 下按需读取。
-- 技能正文**不放密钥、不放真实 IP/域名**。环境相关的具体值放到同目录被 gitignore 的 `*.local` 文件里，SKILL.md 只写「去读哪个文件」。
+- **所有技能一律放在 `skill/<skill-name>/` 下，也一律从 `skill/` 里读取**：需要用到某个技能时，读 `skill/<skill-name>/SKILL.md`；它 frontmatter 里的 `description` 就是判断「这个技能是否与当前任务相关」的唯一依据。
+- `skill/` 已被 `.gitignore` 排除，**是本地目录，不进公开仓库**。所以技能里可以写本机专属内容（内网 IP、私密端点等），但**密钥本体仍然不许写进任何文件**。
+- 当前技能清单（新增技能时同步更新这一段）：
+  - `skill/network-proxy/` —— 通过用户 Windows 上的 Clash 代理访问墙外站点。端点值在同目录的 `endpoint.local`。
+  - `skill/visual-check/` —— 用无头浏览器看前端页面：截图、量样式、排查「闪一下/跳一下」。附带 `scripts/` 与 `INSTALL.md`。
+- 新增技能时还要遵循：
+  - 目录名与 frontmatter 里的 `name` 一致，小写 kebab-case。
+  - `description` 写清楚「做什么」+「什么时候触发」，宁可写得积极一些。
+  - 正文用祈使句，控制在 500 行以内；长内容拆到同目录的 `references/` 下按需读取。
 
 ## 网络规则（重要）
 
 本机（服务器容器）位于内网，**直连 Google、GitHub、OpenAI 等站点不通**。
-出口是用户 Windows 上的 Clash（已开启「允许局域网连接」），其地址记在同目录的
-`.agents/skills/network-proxy/endpoint.local`，默认端口 7897。
+出口是用户 Windows 上的 Clash（已开启「允许局域网连接」），其地址记在
+`skill/network-proxy/endpoint.local`，默认端口 7897。
 
-- 访问被墙站点前，先按 `.agents/skills/network-proxy/SKILL.md` 里的流程取用代理。
+- 访问被墙站点前，先按 `skill/network-proxy/SKILL.md` 里的流程取用代理。
 - 代理不可用时，**不要自行猜测或扫描网段**，按该技能要求向用户询问三件事（Win 的 IP、Clash 是否开启、是否开启局域网连接）。
 - 本环境**刻意不做全局代理**：不要往 `~/.bashrc` 等配置文件里写全局 `http_proxy`，用命令级前缀或工具自身配置。
 - 国内可直连的资源（`goproxy.cn`、npm/apt 国内镜像、内网服务）保持直连，不要绕代理。
