@@ -22,6 +22,7 @@
 - 当前技能清单（新增技能时同步更新这一段）：
   - `skill/network-proxy/` —— 通过用户 Windows 上的 Clash 代理访问墙外站点。端点值在同目录的 `endpoint.local`。
   - `skill/visual-check/` —— 用无头浏览器看前端页面：截图、量样式、排查「闪一下/跳一下」。附带 `scripts/` 与 `INSTALL.md`。
+- 公开仓库里另保留一份**可对外发布**的副本 `.agents/skills/network-proxy/`（与 `skill/network-proxy/` 内容一致，供他人复用）。**读取时以 `skill/` 为准**；技能内容有改动时，两份一起改。
 - 新增技能时还要遵循：
   - 目录名与 frontmatter 里的 `name` 一致，小写 kebab-case。
   - `description` 写清楚「做什么」+「什么时候触发」，宁可写得积极一些。
