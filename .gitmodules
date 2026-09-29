@@ -1,3 +1,6 @@
 [submodule "adk-go"]
 	path = adk-go
 	url = https://github.com/xianshujun/adk-go.git
+[submodule "a2a-go"]
+	path = a2a-go
+	url = https://github.com/xianshujun/a2a-go.git
